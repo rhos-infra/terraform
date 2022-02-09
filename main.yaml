@@ -1,0 +1,80 @@
+---
+
+- hosts: "{{ hosts_pattern | default('localhost') }}"
+  gather_facts: True
+  run_once: True
+  pre_tasks:
+    - name: Fail If Binary Archive URL And Checksum Are Not Provided
+      fail:
+        msg:
+          - "Please ensure binary_archive_url and binary_archive_sha256_checksum are provided."
+      when:
+        - binary_archive_url is not defined
+        - binary_archive_sha256_checksum is not defined
+
+    - name: Fail If Binary Provided Is Not Compiled For Host
+      fail:
+        msg:
+          - "Binary not compiled for {{ ansible_facts['os_family'] | lower}}."
+          - 'Please provide correct archive.'
+      when: ansible_facts['os_family'] | lower not in binary_archive_url | lower
+
+    - name: Fail If Infrastracture State Is Not Correct
+      fail:
+        msg:
+          - "terraform_infra_state must be set to 'present' or 'absent'."
+      when: terraform_infra_state is not in ['present', 'absent']
+
+    - name: Fail If Check Mode Is Not Correct
+      fail:
+        msg:
+          - "terraform_check_mode must be boolean ('true' or 'false')."
+      when: terraform_check_mode | lower not in ['true', 'false']
+
+    - name: Fail If Project Path Does Not Exist
+      block:
+        - name: Terraform Project Path Not Defined
+          fail:
+            msg:
+              - 'terraform_project_path is not defined.'
+          when: terraform_project_path is not defined
+
+        - name: Terraform Project Path Does Not Exist
+          stat:
+            path: "{{ terraform_project_path }}"
+          register: terraform_project_path_stat
+          failed_when: not terraform_project_path_stat['stat']['exists']
+
+  tasks:
+    - name: Terraform Provisioning
+      block:
+        - name: Prepare Terrafrom Environment
+          import_role:
+            name: terraform_environment
+            tasks_from: prepare
+
+        - name: Execute Terraform Plan
+          vars:
+            terraform_check_mode: True
+          import_role:
+            name: terraform_environment
+            tasks_from: plan
+      always:
+        - name: Cleanup Terraform Environment
+          import_role:
+            name: terraform_environment
+            tasks_from: cleanup
+      rescue:
+        - name: Notify Failure
+          ansible.builtin.set_stats:
+            data:
+              ERROR:
+                - "Validation failed."
+                - "Failed to verify terraform plan."
+                - "Please check playbook output for the exact error."
+        - name: Failure
+          fail:
+            msg:
+              - "Validation failed."
+              - "Failed to verify terraform plan."
+              - "Please check playbook output for the exact error."

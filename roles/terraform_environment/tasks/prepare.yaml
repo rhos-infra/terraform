@@ -1,0 +1,23 @@
+---
+
+- name: Create Temporary Directory
+  ansible.builtin.tempfile:
+    suffix: 'ir-terraform'
+    state: directory
+  register: ir_terraform_temp_dir
+
+- name: Configure Terraform Path
+  ansible.builtin.set_fact:
+    terraform_archive_path: "{{ ir_terraform_temp_dir['path'] }}/{{ binary_archive_url | basename }}"
+    terraform_binary_path: "{{ ir_terraform_temp_dir['path'] }}/terraform"
+
+- name: Dowload Terraform Binary
+  ansible.builtin.get_url:
+    url: "{{ binary_archive_url }}"
+    dest: "{{ terraform_archive_path }}"
+    checksum: "sha256:{{ binary_archive_sha256_checksum }}"
+
+- name: Unarhive Terraform Binary
+  ansible.builtin.unarchive:
+    src: "{{ terraform_archive_path | string }}"
+    dest: "{{ ir_terraform_temp_dir['path'] }}"

@@ -1,0 +1,12 @@
+---
+
+- name: "Terraform Action: '{{ terraform_infra_state }}' - Check Only: '{{ terraform_check_mode | default(False) }}'"
+  community.general.terraform:
+    binary_path: "{{ terraform_binary_path }}"
+    state: "{{ terraform_infra_state }}"
+    # We always assume that this will be executed from a newly cloned instance of this repository
+    force_init: True
+    init_reconfigure: True
+    project_path: "{{ terraform_project_path }}"
+    # plan_file: "{{ terraform_plan_file }}"
+  check_mode: "{{ terraform_check_mode }}"
