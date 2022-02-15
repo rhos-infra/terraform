@@ -4,14 +4,6 @@
   gather_facts: True
   run_once: True
   pre_tasks:
-    - name: Fail If Binary Archive URL And Checksum Are Not Provided
-      fail:
-        msg:
-          - "Please ensure binary_archive_url and binary_archive_sha256_checksum are provided."
-      when:
-        - binary_archive_url is not defined
-        - binary_archive_sha256_checksum is not defined
-
     - name: Fail If Binary Provided Is Not Compiled For Host
       fail:
         msg:
@@ -19,26 +11,8 @@
           - 'Please provide correct archive.'
       when: ansible_system | lower not in binary_archive_url | lower
 
-    - name: Fail If Infrastracture State Is Not Correct
-      fail:
-        msg:
-          - "terraform_infra_state must be set to 'present' or 'absent'."
-      when: terraform_infra_state is not in ['present', 'absent']
-
-    - name: Fail If Check Mode Is Not Correct
-      fail:
-        msg:
-          - "terraform_check_mode must be boolean ('true' or 'false')."
-      when: terraform_check_mode | lower not in ['true', 'false']
-
     - name: Fail If Project Path Does Not Exist
       block:
-        - name: Terraform Project Path Not Defined
-          fail:
-            msg:
-              - 'terraform_project_path is not defined.'
-          when: terraform_project_path is not defined
-
         - name: Terraform Project Path Does Not Exist
           stat:
             path: "{{ terraform_project_path }}"

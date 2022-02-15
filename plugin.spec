@@ -33,6 +33,7 @@ subparsers:
                       Refer to: https://www.terraform.io/downloads
                     required: True
                     ansible_variable: 'binary_archive_url'
+
                 binary-archive-sha256-checksum:
                     type: Value
                     help: |
@@ -46,21 +47,22 @@ subparsers:
               options:
                 state:
                   type: Value
-                  help: |
-                    Terraform infrastracture state.
-
+                  help: Terraform infrastracture state.
                   required: yes
                   choices:
                     - present
                     - absent
                   ansible_variable: 'terraform_infra_state'
+                  default: 'present'
+
                 check-mode:
-                  type: Flag
+                  type: Bool
                   help: |
                     Flag to check terraform plan without applying it.
-
+                  default: False
                   required: False
                   ansible_variable: 'terraform_check_mode'
+
                 project-path:
                   type: Value
                   help: |
