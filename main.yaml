@@ -15,9 +15,9 @@
     - name: Fail If Binary Provided Is Not Compiled For Host
       fail:
         msg:
-          - "Binary not compiled for {{ ansible_facts['os_family'] | lower}}."
+          - "Binary not compiled for {{ ansible_facts['ansible_system'] | lower }}."
           - 'Please provide correct archive.'
-      when: ansible_facts['os_family'] | lower not in binary_archive_url | lower
+      when: ansible_facts['ansible_system'] | lower not in binary_archive_url | lower
 
     - name: Fail If Infrastracture State Is Not Correct
       fail:
