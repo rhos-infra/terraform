@@ -54,8 +54,6 @@
             tasks_from: prepare
 
         - name: Execute Terraform Plan
-          vars:
-            terraform_check_mode: True
           import_role:
             name: terraform_environment
             tasks_from: plan
