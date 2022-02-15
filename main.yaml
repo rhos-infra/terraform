@@ -3,6 +3,8 @@
 - hosts: "{{ hosts_pattern | default('localhost') }}"
   gather_facts: True
   run_once: True
+  vars:
+    terraform_check_mode: False
   pre_tasks:
     - name: Fail If Binary Archive URL And Checksum Are Not Provided
       fail:
