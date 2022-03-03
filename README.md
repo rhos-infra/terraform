@@ -44,7 +44,7 @@ and `hosts_pattern` is supplied.
 | `hosts_pattern`                  | `--hosts-pattern`                  | Ansible hosts string. **Required**                                                | `null`  | `undercloud`                                                                      | `--hosts-pattern="undercloud"`                                                                           |
 | `binary_archive_url`             | `--binary-archive-url`             | URL to terraform binary archive. **Required**                                     | `null`  | `https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_darwin_arm64.zip` | `--binary-archive-url='https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_darwin_arm64.zip'` |
 | `binary_archive_sha256_checksum` | `--binary-archive-sha256-checksum` | SHA256 checksum of terraform binary archive. **Required**                         | `null`  | `723363af9524c0897e9a7d871d27f0d96f6aafd11990df7e6348f5b45d2dbe2c.`               | `--binary-archive-sha256-checksum='723363af9524c0897e9a7d871d27f0d96f6aafd11990df7e6348f5b45d2dbe2c.'`   |
-| `terraform_infra_state`          | `--state`                          | Terraform infrastructure state. **Required** **Choices:** `['present', 'absent']` | `null`  | `null`                                                                            | `--state='present'`                                                                                      |
+| `terraform_plan_state`          | `--state`                          | Terraform infrastructure state. **Required** **Choices:** `['present', 'absent']` | `null`  | `null`                                                                            | `--state='present'`                                                                                      |
 | `terraform_check_mode`           | `--project-path`                   | Checks terraform plan.                                                            | `False` | `True`                                                                            | `--check-mode`                                                                                           |
 | `terraform_project_path`         | `--project-path`                   | Path to terraform project containing  `main.tf`. **Required**                     | `null`  | `/path/to/project`                                                                | `--project-path='/path/to/project'`                                                                      |
 
@@ -60,7 +60,7 @@ Working with variables files (`-e @/path/to/file.yaml`) is more convenient.
 Execute terraform plan from macOS local host:
 
 ```bash
-ansible-playbook -vvvv main.yaml -e binary_archive_url='https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_darwin_arm64.zip' -e binary_archive_sha256_checksum='723363af9524c0897e9a7d871d27f0d96f6aafd11990df7e6348f5b45d2dbe2c.' -e terraform_infra_state='present' -e terraform_check_mode='False' -e terraform_project_path='/tmp/'
+ansible-playbook -vvvv main.yaml -e binary_archive_url='https://releases.hashicorp.com/terraform/1.1.5/terraform_1.1.5_darwin_arm64.zip' -e binary_archive_sha256_checksum='723363af9524c0897e9a7d871d27f0d96f6aafd11990df7e6348f5b45d2dbe2c.' -e terraform_plan_state='present' -e terraform_check_mode='False' -e terraform_project_path='/tmp/'
 ```
 
 ### Infrared Examples

@@ -24,8 +24,8 @@
     - name: Fail If Infrastracture State Is Not Correct
       fail:
         msg:
-          - "terraform_infra_state must be set to 'present' or 'absent'."
-      when: terraform_infra_state is not in ['present', 'absent']
+          - "terraform_plan_state must be set to 'present' or 'absent'."
+      when: terraform_plan_state is not in ['present', 'absent']
 
     - name: Fail If Check Mode Is Not Correct
       fail:
