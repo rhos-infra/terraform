@@ -1,12 +1,14 @@
 ---
 
-- name: "Terraform Action: '{{ terraform_infra_state }}' - Check Only: '{{ terraform_check_mode | default(False) }}'"
+- name: "Terraform Action: '{{ terraform_plan_state }}' - Check Only: '{{ terraform_check_mode | default(False) }}'"
   community.general.terraform:
     binary_path: "{{ terraform_binary_path }}"
-    state: "{{ terraform_infra_state }}"
-    # We always assume that this will be executed from a newly cloned instance of this repository
+    state: "{{ terraform_plan_state }}"
+    variables: "{{ terraform_plan_variables | default(omit) }}"
+    variables_files: "{{ terraform_plan_variables_files | default(omit) }}"
+    backend_config: "{{ terraform_backend_config | default(omit) }}"
+    backend_config_files: "{{ terraform_backend_config_files | default(omit) }}"
     force_init: True
     init_reconfigure: True
     project_path: "{{ terraform_project_path }}"
-    # plan_file: "{{ terraform_plan_file }}"
   check_mode: "{{ terraform_check_mode }}"

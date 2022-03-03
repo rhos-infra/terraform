@@ -11,6 +11,7 @@
     terraform_archive_path: "{{ ir_terraform_temp_dir['path'] }}/{{ binary_archive_url | basename }}"
     terraform_binary_path: "{{ ir_terraform_temp_dir['path'] }}/terraform"
 
+# TODO(vkhitrin): Consider caching this somehow
 - name: Dowload Terraform Binary
   ansible.builtin.get_url:
     url: "{{ binary_archive_url }}"
