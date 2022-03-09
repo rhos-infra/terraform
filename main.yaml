@@ -59,22 +59,21 @@
           import_role:
             name: terraform_environment
             tasks_from: plan
+      rescue:
+        - name: Notify Error In Execution Terraform Plan
+          debug:
+            msg: 'Failed to execute terraform plan.'
       always:
         - name: Cleanup Terraform Environment
           import_role:
             name: terraform_environment
             tasks_from: cleanup
-      rescue:
-        - name: Notify Failure
-          ansible.builtin.set_stats:
-            data:
-              ERROR:
-                - "Validation failed."
-                - "Failed to verify terraform plan."
-                - "Please check playbook output for the exact error."
-        - name: Failure
-          fail:
+        - name: Summarize Terraform Execution
+          debug:
             msg:
-              - "Validation failed."
-              - "Failed to verify terraform plan."
-              - "Please check playbook output for the exact error."
+              - "Execution failed: {{ terraform_plan_execution['failed'] }}"
+              - "stdout:"
+              - "{{ terraform_plan_execution['stdout_lines'] }}"
+              - "stderr:"
+              - "{{ terraform_plan_execution['stderr_lines'] }}"
+          failed_when: terraform_plan_execution is failed
