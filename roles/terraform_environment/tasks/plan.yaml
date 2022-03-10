@@ -3,6 +3,7 @@
 - name: "Terraform Action: '{{ terraform_plan_state }}' - Check Only: '{{ terraform_check_mode | default(False) }}'"
   environment:
     TF_CLI_ARGS: '-no-color'
+    TF_IN_AUTOMATION: 'true'
   community.general.terraform:
     binary_path: "{{ terraform_binary_path }}"
     state: "{{ terraform_plan_state }}"

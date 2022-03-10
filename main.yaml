@@ -72,8 +72,19 @@
           debug:
             msg:
               - "Execution failed: {{ terraform_plan_execution['failed'] }}"
-              - "stdout:"
-              - "{{ terraform_plan_execution['stdout_lines'] }}"
-              - "stderr:"
-              - "{{ terraform_plan_execution['stderr_lines'] }}"
+              - "Output:"
+              - |-
+                {%- if 'stdout_lines' in terraform_plan_execution -%}
+                  {{ terraform_plan_execution['stdout_lines'] }}
+                {%- else -%}
+                []
+                {%- endif -%}
+              - "Error:"
+              - |-
+                {%- if 'stderr_lines' in terraform_plan_execution -%}
+                  {{ terraform_plan_execution['stderr_lines'] }}
+                {%- else -%}
+                  {%- set msg= terraform_plan_execution['msg'].strip() | regex_replace('[\r\n]+','STRING_TO_SPLIT') -%}
+                  {{ msg.split('STRING_TO_SPLIT') }}
+                {%- endif -%}
           failed_when: terraform_plan_execution is failed
