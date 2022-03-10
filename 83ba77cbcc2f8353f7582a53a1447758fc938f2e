@@ -1,0 +1,8 @@
+Code-Review+2: Vadim Khitrin <vkhitrin@redhat.com>
+Code-Review+2: Ella Shulman <ellashulman1@gmail.com>
+Verified+1: Vadim Khitrin <vkhitrin@redhat.com>
+Submitted-by: Vadim Khitrin <vkhitrin@redhat.com>
+Submitted-at: Thu, 10 Mar 2022 07:57:20 +0000
+Reviewed-on: https://review.gerrithub.io/c/rhos-infra/terraform/+/534318
+Project: rhos-infra/terraform
+Branch: refs/heads/main
