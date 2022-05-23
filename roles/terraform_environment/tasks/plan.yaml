@@ -4,7 +4,7 @@
   environment:
     TF_CLI_ARGS: '-no-color'
     TF_IN_AUTOMATION: 'true'
-  community.general.terraform:
+  community.misc.terraform:
     binary_path: "{{ terraform_binary_path }}"
     state: "{{ terraform_plan_state }}"
     variables: "{{ terraform_plan_variables | default(omit) }}"
