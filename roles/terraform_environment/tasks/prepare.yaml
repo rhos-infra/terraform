@@ -22,3 +22,4 @@
   ansible.builtin.unarchive:
     src: "{{ terraform_archive_path | string }}"
     dest: "{{ ir_terraform_temp_dir['path'] }}"
+    remote_src: true

@@ -4,7 +4,8 @@
   gather_facts: True
   run_once: True
   vars:
-    terraform_check_mode: False
+    terraform_check_mode: false
+    use_remote_project: false
   pre_tasks:
     - name: Fail If Binary Archive URL And Checksum Are Not Provided
       fail:
@@ -33,21 +34,37 @@
           - "terraform_check_mode must be boolean ('true' or 'false')."
       when: terraform_check_mode | lower not in ['true', 'false']
 
-    - name: Fail If Project Path Does Not Exist
-      block:
-        - name: Terraform Project Path Not Defined
-          fail:
-            msg:
-              - 'terraform_project_path is not defined.'
-          when: terraform_project_path is not defined
+    - name: Fail If Terraform Project Path Not Defined
+      fail:
+        msg:
+          - 'terraform_project_path is not defined.'
+      when: terraform_project_path is not defined
 
-        - name: Terraform Project Path Does Not Exist
-          stat:
-            path: "{{ terraform_project_path }}"
-          register: terraform_project_path_stat
-          failed_when: not terraform_project_path_stat['stat']['exists']
+    - name: Fail If Project Path Does Not Exist Locally
+      delegate_to: localhost
+      stat:
+        path: "{{ terraform_project_path }}"
+      register: terraform_project_path_stat
+      failed_when: not terraform_project_path_stat['stat']['exists']
+      when:
+        - not use_remote_project
+
+    - name: Fail If Project Path Does Not Exist On Remote
+      stat:
+        path: "{{ terraform_project_path }}"
+      register: terraform_project_path_stat
+      failed_when: not terraform_project_path_stat['stat']['exists']
+      when:
+        - use_remote_project
 
   tasks:
+    - name: Prepare Remote Environment If Required
+      include_role:
+        name: remote_environment
+        tasks_from: prepare
+      when:
+        - ansible_host != 'localhost'
+        - not use_remote_project
     - name: Terraform Provisioning
       block:
         - name: Prepare Terrafrom Environment
@@ -64,10 +81,17 @@
           debug:
             msg: 'Failed to execute terraform plan.'
       always:
+        - name: Cleanup Remote Environment
+          include_role:
+            name: remote_environment
+            tasks_from: cleanup
+          when: ir_terraform_project_temp_dir is defined
+
         - name: Cleanup Terraform Environment
           import_role:
             name: terraform_environment
             tasks_from: cleanup
+
         - name: Summarize Terraform Execution
           debug:
             msg:

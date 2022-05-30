@@ -1,0 +1,6 @@
+---
+
+- name: Remove Temporary Direcotry
+  ansible.builtin.file:
+    path: "{{ ir_terraform_project_temp_dir['path'] | string }}"
+    state: absent
