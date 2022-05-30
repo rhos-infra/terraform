@@ -1,0 +1,16 @@
+---
+
+- name: Create Temporary Directory On Remote Host For Terraform Project
+  ansible.builtin.tempfile:
+    suffix: 'ir-terraform-project'
+    state: directory
+  register: ir_terraform_project_temp_dir
+
+- name: "Copy Local Terraform Project Directory To Remote Host '{{ ansible_host }}'"
+  ansible.builtin.copy:
+    src: "{{ terraform_project_path }}"
+    dest: "{{ ir_terraform_project_temp_dir['path'] }}"
+
+- name: Update Terraform Project Path Variable
+  set_fact:
+    terraform_project_path: "{{ ir_terraform_project_temp_dir['path'] }}"

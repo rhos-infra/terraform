@@ -21,6 +21,12 @@ subparsers:
                   required: True
                   default: 'localhost'
                   ansible_variable: 'hosts_pattern'
+                use-remote-project:
+                  type: Flag
+                  help: |
+                    Do not upload local project to remote host.
+                    Only works when `ansible_host` is not equal to `localhost`
+                  ansible_variable: use_remote_project
 
             - title: Binary arguments
               options:
