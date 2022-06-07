@@ -12,5 +12,5 @@
     dest: "{{ ir_terraform_project_temp_dir['path'] }}"
 
 - name: Update Terraform Project Path Variable
-  set_fact:
+  ansible.builtin.set_fact:
     terraform_project_path: "{{ ir_terraform_project_temp_dir['path'] }}"
