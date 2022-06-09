@@ -4,6 +4,8 @@
   environment:
     TF_CLI_ARGS: '-no-color'
     TF_IN_AUTOMATION: 'true'
+  vars:
+    tf_project_path: "{{ remote_execution | ternary(ir_terraform_project_temp_dir['path'], terraform_project_path) }}"
   community.general.cloud.misc.terraform:
     binary_path: "{{ terraform_binary_path }}"
     state: "{{ terraform_plan_state }}"
@@ -13,6 +15,6 @@
     backend_config_files: "{{ terraform_backend_config_files | default(omit) }}"
     force_init: True
     init_reconfigure: True
-    project_path: "{{ terraform_project_path }}"
+    project_path: "{{ tf_project_path }}"
   check_mode: "{{ terraform_check_mode }}"
   register: terraform_plan_execution
