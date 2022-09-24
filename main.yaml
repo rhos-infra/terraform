@@ -4,14 +4,34 @@
   gather_facts: True
   run_once: True
   vars:
+    default_binaries:
+      'x86_64':
+        binary_url: 'https://releases.hashicorp.com/terraform/1.3.0/terraform_1.3.0_linux_amd64.zip'
+        sha256_checksum: '380ca822883176af928c80e5771d1c0ac9d69b13c6d746e6202482aedde7d457'
+      'aarch64':
+        binary_url: 'https://releases.hashicorp.com/terraform/1.3.0/terraform_1.3.0_linux_arm64.zip'
+        sha256_checksum: '0a15de6f934cf2217e5055412e7600d342b4f7dcc133564690776fece6213a9a'
+      'arm64':
+        binary_url: 'https://releases.hashicorp.com/terraform/1.3.0/terraform_1.3.0_darwin_arm64.zip'
+        sha256_checksum: '6a3512a1b1006f2edc6fe5f51add9a6e1ef3967912ecf27e66f22e70b9ad7158'
     terraform_check_mode: false
     use_remote_project: false
     remote_execution: false
   pre_tasks:
-    - name: Fail If Binary Archive URL And Checksum Are Not Provided
-      fail:
-        msg:
-          - "Please ensure binary_archive_url and binary_archive_sha256_checksum are provided."
+    - name: Use Default Binaries If Not Provided By User
+      block:
+        - name: Discover Host CPU Arhitecture If Required
+          debug:
+            msg:
+              - "{{ ansible_architecture }}"
+        - name: Fail If Current CPU Arhitecture Has No Defaults
+          fail:
+            msg: "CPU arhitecture '{{ ansible_architecture }}' has no defaults, user input is required"
+          when: ansible_architecture not in default_binaries.keys()
+        - name: Set Binaries Variables
+          set_fact:
+            binary_archive_url: "{{ default_binaries[ansible_architecture]['binary_url'] }}"
+            binary_archive_sha256_checksum: "{{ default_binaries[ansible_architecture]['sha256_checksum'] }}"
       when:
         - binary_archive_url is not defined
         - binary_archive_sha256_checksum is not defined

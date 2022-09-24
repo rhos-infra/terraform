@@ -36,14 +36,14 @@ subparsers:
                       URL to the terraform binary.
                       Every operating system and architecture has its own compiled binary.
                       Refer to: https://www.terraform.io/downloads
-                    required: True
+                    required: False
                     ansible_variable: 'binary_archive_url'
                 binary-archive-sha256-checksum:
                     type: Value
                     help: |
                       SHA256 checksum of terraform binary.
                       Refer to: https://www.terraform.io/downloads
-                    required: True
+                    required: False
                     ansible_variable: 'binary_archive_sha256_checksum'
 
             - title: Terraform arguments
