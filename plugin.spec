@@ -89,3 +89,9 @@ subparsers:
                   help: |
                     List of files containing terraform backend configuration.
                   ansible_variable: 'terraform_backend_config_files'
+                exclude-resources:
+                  type: Value
+                  help: |
+                    A string that specifies resources to exclude from deletion.
+                  ansible_variable: 'excluded_resources'
+
