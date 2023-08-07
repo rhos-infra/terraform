@@ -1,0 +1,5 @@
+---
+
+- name: remove resources from plan to exclude them from delete
+  command: terraform state rm "{{ excluded_resources }}"
+

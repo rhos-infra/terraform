@@ -93,6 +93,14 @@
             name: terraform_environment
             tasks_from: prepare
 
+        - name: exclude resources if required
+          import_role:
+            name: exclude_resources
+            tasks_from: exclude_resources
+          when:
+            - excluded_resources is defined
+            - terraform_plan_state == 'absent'
+
         - name: Execute Terraform Plan
           import_role:
             name: terraform_environment
@@ -133,3 +141,4 @@
                   {{ msg.split('STRING_TO_SPLIT') }}
                 {%- endif -%}
           failed_when: terraform_plan_execution is failed
+
